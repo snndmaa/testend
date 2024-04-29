@@ -1,0 +1,42 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-time Location Updates</title>
+</head>
+<body>
+  <h1>Real-time Location Updates</h1>
+  
+  <!-- Display location updates for each driver -->
+  <div id="locations"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+  <script>
+    const socket = io();
+    
+    // Simulate registering drivers (you might have a separate UI for this)
+    const driverIds = ['driver1', 'driver2'];
+
+    driverIds.forEach((driverId) => {
+      // Send a message to the server to register the driver
+      socket.emit('registerDriver', driverId);
+
+      // Create a div to display location updates for each driver
+      const driverDiv = document.createElement('div');
+      driverDiv.id = driverId;
+      document.getElementById('locations').appendChild(driverDiv);
+
+      // Listen for location updates from the server for each driver
+      socket.on('locationUpdate', (location) => {
+        document.getElementById(driverId).innerHTML = `
+          Driver ${driverId}:<br>
+          Latitude: ${location.latitude.toFixed(4)}<br>
+          Longitude: ${location.longitude.toFixed(4)}
+        `;
+      });
+    });
+  </script>
+</body>
+</html>
